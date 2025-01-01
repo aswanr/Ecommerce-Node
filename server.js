@@ -9,7 +9,6 @@ const db=mysql.createConnection({
     password:"7170aswan",
     database:"ecommerse_db",
 })
-
 expr.get('/',(req,res)=>{
         db.query("SELECT * from cart",(err,result) =>{
             if(err){
