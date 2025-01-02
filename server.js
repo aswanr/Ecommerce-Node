@@ -3,7 +3,7 @@ const app = express();
 const db= require("./src/config/db.conf");
 const firstrouter=require("./src/routes/first.routes");
 const secondrouter=require("./src/routes/Second.routes");
-
+app.disable('x-powered-by');
 app.get('/', (req, res) => {
     db.query("select * from cart", (err, result) => {
         if (err) {
