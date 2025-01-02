@@ -6,7 +6,7 @@ const path=require("path");
 const db=mysql.createConnection({
     host:"localhost",
     user:"root",
-    password:"7170aswan",
+    password:"",
     database:"ecommerse_db",
 })
 
@@ -21,10 +21,10 @@ expr.get('/',(req,res)=>{
 
     });
 expr.get('/first',(req,res)=>{
-    res.sendFile(path.join(__dirname,"./routers","first.html"));
+    res.sendFile(path.join(__dirname,"./routerpages","first.html"));
 })
 expr.get('/second',(req,res)=>{
-    res.sendFile(path.join(__dirname,"./routers","second.html"));
+    res.sendFile(path.join(__dirname,"./routerpages","second.html"));
 })
 
 const port=process.env.port || 3001;
