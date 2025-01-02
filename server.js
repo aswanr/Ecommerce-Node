@@ -1,14 +1,8 @@
 const express = require("express");
 const app = express();
-const mysql = require("mysql2");
-const path = require("path");
-
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "ecommerse_db",
-})
+const db= require("./src/config/db.conf");
+const firstrouter=require("./src/routes/first.routes");
+const secondrouter=require("./src/routes/Second.routes");
 
 app.get('/', (req, res) => {
     db.query("select * from cart", (err, result) => {
@@ -18,16 +12,10 @@ app.get('/', (req, res) => {
         }
         res.json(result);
     });
-
 });
 
-app.get('/first', (req, res) => {
-    res.sendFile(path.join(__dirname, "./routerpages", "first.html"));
-})
-
-app.get('/second', (req, res) => {
-    res.sendFile(path.join(__dirname, "./routerpages", "second.html"));
-})
+app.use('/',firstrouter);
+app.use('/',secondrouter);
 
 const port=process.env.port || 3001;
 
