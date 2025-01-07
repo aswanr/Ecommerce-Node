@@ -5,15 +5,15 @@ const crud = require("./routes/crud.routes");
 app.disable('x-powered-by');
 app.use(express.json());
 
+
 app.use('/', crud);
 
-const port = process.env.PORT || 3002;
-app.listen(port, (err) => {
-    if (err) {
-        console.log("error");
-    } else {
-        console.log(`Server is running on port ${port}`);
-    }
-});
+const port = process.env.port || 3001;
 
-module.exports = app;
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Server running on Port ${port}`);
+  });
+}
+
+module.exports = app; 

@@ -54,13 +54,10 @@ crud.get("/get/:id", (req, res) => {
 //update or edit
 crud.put('/useredit/:id', (req, res) => {
     const getbyid = req.params.id;
-    const firstname = req.body.first_name;
-    const lastname = req.body.last_name;
-    const username = req.body.username;
-    const password = req.body.password;
-    const email = req.body.email;
-    const phone_number = req.body.phone_number;
-    db.query('update user set first_name=?,last_name=?,username=?,password=?,email=?,phone_number=? where id=?', [firstname, lastname, username, password, email, phone_number, getbyid], (error, result) => {
+    const {  first_name, last_name, username, password, email, phone_number, } = req.body;
+    const querry='update user set first_name=?,last_name=?,username=?,password=?,email=?,phone_number=? where id=?';
+    const values = [first_name,last_name, username, password, email, phone_number, getbyid];
+    db.query(querry,values,(error, result) => {
         if (error) {
             console.log(error);
         }

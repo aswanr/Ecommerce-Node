@@ -22,7 +22,7 @@ describe('CRUD Operations', () => {
 
   it('POST a new user', async () => {
     const user = {
-      id: 205,
+      id: 145,
       first_name: 'John',
       last_name: 'Doe',
       username: 'johndoe',
@@ -58,7 +58,7 @@ describe('CRUD Operations', () => {
   });
 
   it('DELETE a user by ID', async () => {
-    const deleteId = 2; // Use an ID that exists in your test database
+    const deleteId = 1; // Use an ID that exists in your test database
     const res = await request(server).delete(`/userdelete/${deleteId}`);
     expect(res.statusCode).toBe(200);
     expect(res.text).toBe(' Deleted successfully ');
