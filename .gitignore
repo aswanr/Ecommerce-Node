@@ -1,8 +1,6 @@
 #scannerwork
-.scannerwork
+scannerwork/
 #covearge
-.covearge
-#sonar
-.sonar
+covearge/
 #nyc jest
-.nyc
+nyc/
