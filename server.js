@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
-const db= require("./src/config/db.conf");
-const firstrouter=require("./src/routes/first.routes");
-const secondrouter=require("./src/routes/Second.routes");
+const db= require("./config/db.conf");
+const firstrouter=require("./routes/first.routes");
+const secondrouter=require("./routes/Second.routes");
 app.disable('x-powered-by');
 
 app.get('/', (req, res) => {
