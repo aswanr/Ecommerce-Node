@@ -4,3 +4,4 @@ scannerwork/
 covearge/
 #nyc jest
 nyc/
+node_modules

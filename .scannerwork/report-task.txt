@@ -1,6 +1,6 @@
-projectKey=CRUD-Assignments
+projectKey=Jwttoken
 serverUrl=http://localhost:9000
 serverVersion=10.7.0.96327
-dashboardUrl=http://localhost:9000/dashboard?id=CRUD-Assignments
-ceTaskId=4aba5093-a8e0-4290-8043-456d0f239e9b
-ceTaskUrl=http://localhost:9000/api/ce/task?id=4aba5093-a8e0-4290-8043-456d0f239e9b
+dashboardUrl=http://localhost:9000/dashboard?id=Jwttoken
+ceTaskId=5da41d65-0006-4e60-ba34-3cc9f6b6f9a8
+ceTaskUrl=http://localhost:9000/api/ce/task?id=5da41d65-0006-4e60-ba34-3cc9f6b6f9a8
