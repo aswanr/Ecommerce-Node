@@ -43,7 +43,7 @@ describe('POST /admin/user', () => {
             .post('/admin/user')
             .send();
 
-        expect(res.status).toBe(401);
+        expect(res.statusCode).toBe(401);
         // expect(res.body).toEqual({ success: true, data: users });
     });
 });
