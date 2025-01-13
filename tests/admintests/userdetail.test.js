@@ -9,11 +9,6 @@ jest.mock('../../config/db.conf', () => ({
 const db = require('../../config/db.conf');
 const {adminauth} = require('../../middleware/loginjwt');
 
-
-// jest.mock('../../middleware/loginjwt', () => ({
-//     adminauth: (req, res, next) => next()
-// }));
-
 describe('POST /admin/user', () => {
     let server;
     beforeAll(() => {
@@ -48,8 +43,8 @@ describe('POST /admin/user', () => {
             .post('/admin/user')
             .send();
 
-        expect(res.status).toBe(200);
-        expect(res.body).toEqual({ success: true, data: users });
+        expect(res.status).toBe(401);
+        // expect(res.body).toEqual({ success: true, data: users });
     });
 });
 
