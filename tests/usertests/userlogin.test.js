@@ -2,7 +2,6 @@ const request = require('supertest');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const app = require('../../server'); 
-
 jest.mock('../../config/db.conf');
 
 jest.mock('../../config/db.conf', () => ({

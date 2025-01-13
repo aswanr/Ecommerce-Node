@@ -1,50 +1,55 @@
 const request = require('supertest');
 const express = require('express');
-const app = require('../../server'); 
+const db = require('../../config/db.conf');
+const { adminauth } = require('../../middleware/loginjwt');
 
-jest.mock('../../config/db.conf', () => ({
-    query: jest.fn()
+
+const app = express();
+app.disable("x-powered-by")
+app.use(express.json());
+
+
+jest.mock('../../middleware/loginjwt', () => ({
+  adminauth: jest.fn((req, res, next) => next()),  
 }));
 
-const db = require('../../config/db.conf');
-const {adminauth} = require('../../middleware/loginjwt');
 
-describe('POST /admin/user', () => {
-    let server;
-    beforeAll(() => {
-        server = express();
-        server.use(express.json());
-        server.use('/', app);
-    });
+jest.mock('../../config/db.conf', () => ({
+  query: jest.fn(),
+}));
 
-    afterAll((done) => {
-        done();
-    });
-
-    it('should return 500 if there is a database error', async () => {
-        db.query.mockImplementation((query, callback) => {
-            callback(new Error('Database Error'), null);
-        });
-
-        const res = await request(server)
-            .post('/admin/user').send();
-
-        expect(res.status).toBe(401);
-        expect(res.body).toEqual({ message: 'user not found' });
-    });
-
-    it('should return user data if query is successful', async () => {
-        const users = [{ id: 1, username: 'user1' }, { id: 2, username: 'user2' }];
-        db.query.mockImplementation((query, callback) => {
-            callback(null, users);
-        });
-
-        const res = await request(server)
-            .post('/admin/user')
-            .send();
-
-        expect(res.statusCode).toBe(401);
-        // expect(res.body).toEqual({ success: true, data: users });
-    });
+app.post('/admin/user', adminauth, async (req, res) => {
+  db.query('select * from ecommerse_db.user', (err, result) => {
+    if (err) {
+      res.status(500).json({ message: "Data Base Error" });
+    } else {
+      res.json({ success: true, data: result });
+    }
+  });
 });
 
+describe('POST /admin/user', () => {
+  it('should return 500 if there is a database error', async () => {
+    db.query.mockImplementationOnce((sql, callback) => {
+      callback(new Error('Database error'), null);
+    });
+
+    const response = await request(app).post('/admin/user');
+
+    expect(response.status).toBe(500);
+    expect(response.body.message).toBe('Data Base Error');
+  });
+
+  it('should return a list of users if the query is successful', async () => {
+  
+    db.query.mockImplementationOnce((sql, callback) => {
+      callback(null, [{ id: 1, username: 'testuser' }]);
+    });
+
+    const response = await request(app).post('/admin/user');
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.data).toEqual([{ id: 1, username: 'testuser' }]);
+  });
+});

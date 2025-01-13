@@ -2,7 +2,7 @@ const express =require('express');
 const app=express();
 const db = require("../../config/db.conf");
 const {adminauth} = require('../../middleware/loginjwt');
-
+app.disable("x-powered-by");
 app.post('/admin/user',adminauth,async(req,res)=>{
     db.query('select * from ecommerse_db.user',(err,result)=>{
         if(err){

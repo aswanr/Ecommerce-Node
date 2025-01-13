@@ -2,7 +2,6 @@ const request = require('supertest');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const app = require('../../server'); 
-
 jest.mock('../../config/db.conf');
 
 jest.mock('../../config/db.conf', () => ({
@@ -64,10 +63,10 @@ describe('POST /login/admin', () => {
             callback(null, [{ id: userId, password: 'pass1' }]);
         });
 
-        // const res = await request(server).post('/login/user').send({ username: 'user1', password: 'pass1' });
-        // expect(res.status).toBe(200);
-        // const token = res.body;
-        // const decoded = jwt.verify(token,process.env.JWT_SECRET_KEY);
-        // expect(decoded.ids).toBe(userId);
+        const res = await request(server).post('/login/user').send({ username: 'user1', password: 'pass1' });
+        expect(res.status).toBe(200);
+        const token = res.body;
+        const decoded = jwt.verify(token,process.env.JWT_SECRET_KEY);
+        expect(decoded.ids).toBe(userId);
     });
 });
