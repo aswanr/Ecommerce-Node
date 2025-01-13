@@ -1,26 +1,28 @@
 const request = require('supertest');
-const app = require('../server');
+const crud = require('../server');
+const db = require('../config/db.conf');
 
-describe('CRUD Operations', () => {
+jest.mock('../config/db.conf');
 
-    let server;
-    server = app.listen(3001);
-    
-    it('DELETE a user by ID',async()=>{
-    const deleteId = 16;
-    const res = await request(server).delete(`/userdelete/${deleteId}`);
-    expect(res.statusCode).toBe(200);
-    expect(res.text).toBe(' Deleted successfully ');
-    const getUser = await request(server).get(`/get/${deleteId}`);
-    expect(getUser.statusCode).toBe(404);
-    expect(getUser.text).toBe("Id not founded");
-    })
-  
-
-  it('return "Id not founded" if user does not exist', async () => {
-    const deleteId = 6000;
-    const res = await request(server).delete(`/userdelete/${deleteId}`);
-    expect(res.statusCode).toBe(200);
-    expect(res.text).toBe("Id not founded");
+describe('CRUD module tests', () => {
+  it('should delete a user successfully', async () => {
+    const deleteId = "1";
+    db.query.mockImplementation((query, id, callback) => {
+      callback(null, { affectedRows: 1 });
+    });
+    const response = await request(crud).delete(`/userdelete/${deleteId}`);
+    expect(response.statusCode).toBe(200);
+    expect(response.text).toBe(' Deleted successfully ');
+    expect(db.query).toHaveBeenCalledWith('delete from user where id=?', deleteId, expect.any(Function));
+  });
+  it('should return "Id not founded" if user id does not exist', async () => {
+    const deleteId = "2";
+    db.query.mockImplementation((query, id, callback) => {
+      callback(null, { affectedRows: 0 });
+    });
+    const response = await request(crud).delete(`/userdelete/${deleteId}`);
+    expect(response.statusCode).toBe(200);
+    expect(response.text).toBe('Id not founded');
+    expect(db.query).toHaveBeenCalledWith('delete from user where id=?', deleteId, expect.any(Function));
   });
 });

@@ -18,6 +18,5 @@ crud.post('/post', (req, res) => {
             }
           });
         });
-       
 
 module.exports =crud;

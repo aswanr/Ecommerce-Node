@@ -1,41 +1,47 @@
 const request = require('supertest');
-const app = require('../server');
+const app = require('../server'); 
+const db = require('../config/db.conf');
 
-describe('CRUD Operations', () => {
-    let server;
-    server = app.listen(3001);
+jest.mock('../config/db.conf'); 
 
-it('POST a new user', async () => {
-    const user = {
-      id: 2499,
-      first_name: 'Joxdhn',
-      last_name: 'Ddxoe',
-      username: 'jodkxskshndoe',
-      password: 'paxxsdsword',
-      email: 'johndxode@example.com',
-      phone_number: '4523456789',
-      created_time: new Date(),
-    };
-    const res = await request(server).post('/post').send(user);
-    expect(res.statusCode).toBe(200);
-    expect(res.text).toBe(' Done successfully ');
-    const getUser = await request(server).get(`/get/2499`);
-    expect(getUser.statusCode).toBe(200);
-    expect(getUser.body).toEqual(expect.arrayContaining([expect.objectContaining(user)]));
-  });
+describe('POST /post', () => {
+    test('should insert user successfully', async () => {
+        db.query.mockImplementation((query, values, callback) => {
+            callback(null, { message: 'User inserted successfully' });
+        });
 
-  it('POST a new user with invalid data', async () => {
-    const user = {
-      first_name: 'John',
-      last_name: 'Doe',
-      username: 'jossskskshndoe',
-      password: 'psssassword',
-      email: 'johnssdoe@example.com',
-      phone_number: '1852567890',
-      created_time: new Date(),
-    };
-    const res = await request(server).post('/post').send(user);
-    expect(res.statusCode).toBe(404); 
-  });
+        const response = await request(app).post('/post').send({
+            id: 105,
+            first_name: 'Jssohn',
+            last_name: 'Dsoe',
+            username: 'joshndoe',
+            password: 'passsword',
+            email: 'johns.doe@example.com',
+            phone_number: '1784567890',
+            created_time: '2023-01-01 00:00:00'
+        });
+
+        expect(response.status).toBe(200);
+        expect(response.text).toBe('Done successfully');
+    });
+
+    test('should return error when user insertion fails', async () => {
+        db.query.mockImplementation((query, values, callback) => {
+            callback(new Error('Error inserting user'), null);
+        });
+
+        const response = await request(app).post('/post').send({
+            id: 105,
+            first_name: 'John',
+            last_name: 'Doe',
+            username: 'johndoe',
+            password: 'password',
+            email: 'john.doe@example.com',
+            phone_number: '1234567890',
+            created_time: '2023-01-01 00:00:00'
+        });
+
+        expect(response.status).toBe(404); 
+        expect(response.text).toBe('Error inserting user');
+    });
 });
-

@@ -3,7 +3,7 @@ const crud = express();
 const db = require("../config/db.conf");
 crud.disable('x-powered-by');
 
-crud.delete('/userdelete/:id', (req, res) => {
+crud.delete('/userdelete/:id', (req,res) => {
     const deleteid = req.params.id;
     db.query('delete from user where id=?', deleteid, (err, result) => {
         if (err) {

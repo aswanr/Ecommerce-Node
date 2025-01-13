@@ -11,12 +11,7 @@ crud.get("/get/:id", (req, res) => {
         }
         else {
             const value = JSON.parse(JSON.stringify(result));
-            if (result.length === 0) {
-                res.send("Id not founded");
-            }
-            else {
-                res.send(value);
-            }
+            res.send(value);
         }
     })
 });

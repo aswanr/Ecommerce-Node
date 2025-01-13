@@ -1,25 +1,67 @@
 const request = require('supertest');
-const app = require('../server');
+const express = require('express');
+const updateuser = require('../server'); 
+const db = require('../config/db.conf');
 
-describe('CRUD Operations', () => {
-    let server;
-    server = app.listen(3001);
+jest.mock('../config/db.conf'); 
 
-    it('UPDATE a user by ID', async () => {
+const app = express();
+app.use(express.json());
+
+
+describe('PUT /useredit/:id', () => {
+  server = updateuser.listen();
+
+    test('should update user details successfully', async () => {
+        db.query.mockImplementation((query, values, callback) => {
+            callback(null, { affectedRows: 1 });
+        });
+
         const user = {
-          first_name: 'Jodhn',
-          last_name: 'Dode',
-          username: 'johnddoe',
-          password: 'vimal000',
-          email: 'johnddoe@example.com',
-          phone_number: '1284567890',
+            first_name: 'John',
+            last_name: 'Doe',
+            username: 'johndoe',
+            email: 'john.doe@example.com',
+            phone_number: '1234567890'
         };
-        const res = await request(server).put('/useredit/4').send(user);
-        expect(res.statusCode).toBe(200);
-        expect(res.text).toBe(' Updated successfully ');
-        const getUser = await request(server).get(`/get/4`);
-        expect(getUser.statusCode).toBe(200);
-        expect(getUser.body).toEqual(expect.arrayContaining([expect.objectContaining(user)]));
-      });
-});
 
+        const response = await request(server).put('/useredit/1').send(user);
+        expect(response.status).toBe(200);
+        expect(response.text).toBe(' Updated successfully ');
+
+        db.query.mockImplementation((query, values, callback) => {
+            callback(null, [{
+                id: 1,
+                first_name: 'John',
+                last_name: 'Doe',
+                username: 'johndoe',
+                email: 'john.doe@example.com',
+                phone_number: '1234567890'
+            }]);
+        });
+
+        const getUser = await request(server).get('/get/1');
+        expect(getUser.status).toBe(200);
+        expect(getUser.body).toEqual(expect.arrayContaining([expect.objectContaining(user)]));
+    });
+
+    test('should return "Id not founded" when ID does not exist', async () => {
+        db.query.mockImplementation((query, values, callback) => {
+            callback(null, { affectedRows: 0 });
+        });
+
+        const user = {
+            first_name: 'John',
+            last_name: 'Doe',
+            username: 'johndoe',
+            email: 'john.doe@example.com',
+            phone_number: '1234567890'
+        };
+
+        const response = await request(server).put('/useredit/9999').send(user);
+        expect(response.status).toBe(200); 
+        expect(response.text).toBe('Id not founded');
+    });
+
+   
+});
