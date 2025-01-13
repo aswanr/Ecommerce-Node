@@ -1,67 +1,98 @@
 const request = require('supertest');
 const express = require('express');
-const app = express();
-app.use(express.json());
-const db = require("../../config/db.conf");
+const app = require('../../server'); 
+const db = require('../../config/db.conf');
 const { userauth } = require('../../middleware/loginjwt');
 
-jest.mock("../../config/db.conf");
+jest.mock('../../config/db.conf');
 jest.mock('../../middleware/loginjwt');
 
-app.post('/user/products/ordering', userauth, async (req, res) => {
-  const { product_id, order_id, price, quantity, created_time } = req.body;
-  const values = [product_id, order_id, price, quantity, created_time];
-  const q = 'INSERT INTO ecommerse_db.ordered_item (product_id,order_id,price,quantity,created_time) VALUES (?,?,?,?,?);';
-  db.query(q, values, (err, result) => {
-    if (err) {
-      res.status(500).json({ message: "Database Error" });
-    } else {
-      res.json({ success: true, data: result });
-    }
-  });
-});
-
 describe('POST /user/products/ordering', () => {
-  it('should respond with data if db query is successful', async () => {
-    db.query.mockImplementation((query, values, callback) => {
-      callback(null, { affectedRows: 1 });
-    });
+  beforeEach(() => {
     userauth.mockImplementation((req, res, next) => next());
+  });
+
+  it('should insert order successfully and return 200', async () => {
+
+    const mockResult = { affectedRows: 1, insertId: 123 };
+    db.query.mockImplementation((query, values, callback) => {
+      callback(null, mockResult); 
+    });
+
+
+    const orderData = {
+      product_id: 1,
+      order_id: 456,
+      price: 100,
+      quantity: 2,
+      created_time: '2025-01-13 12:00:00'
+    };
 
     const response = await request(app)
       .post('/user/products/ordering')
-      .send({
-        product_id: 1,
-        order_id: 1,
-        price: 100,
-        quantity: 2,
-        created_time: '2025-01-13 15:00:00'
-      });
+      .send(orderData);
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
-    expect(response.body.data).toEqual({ affectedRows: 1 });
+    expect(response.body.data).toEqual(mockResult);
   });
 
-  it('should respond with a 500 status if db query fails', async () => {
+  it('should return 500 if there is a database error', async () => {
+
     db.query.mockImplementation((query, values, callback) => {
-      callback(new Error("Database Error"), null);
+      callback(new Error('Database error'), null);
     });
-    userauth.mockImplementation((req, res, next) => next());
+
+    const orderData = {
+      product_id: 1,
+      order_id: 456,
+      price: 100,
+      quantity: 2,
+      created_time: '2025-01-13 12:00:00'
+    };
 
     const response = await request(app)
       .post('/user/products/ordering')
-      .send({
-        product_id: 1,
-        order_id: 1,
-        price: 100,
-        quantity: 2,
-        created_time: '2025-01-13 15:00:00'
-      });
+      .send(orderData);
 
     expect(response.status).toBe(500);
-    expect(response.body.message).toBe("Database Error");
+    expect(response.body.message).toBe('Database Error');
+  });
+
+  it('should return 400 if input data is missing', async () => {
+    
+    const orderData = {
+      product_id: 1,
+      price: 100,
+      quantity: 2
+    };
+
+    const response = await request(app)
+      .post('/user/products/ordering')
+      .send(orderData);
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe('Missing required fields');
+  });
+
+  it('should return 500 if an unexpected server error occurs', async () => {
+    db.query.mockImplementation((query, values, callback) => {
+      throw new Error('Unexpected server error');
+    });
+
+    const orderData = {
+      product_id: 1,
+      order_id: 456,
+      price: 100,
+      quantity: 2,
+      created_time: '2025-01-13 12:00:00'
+    };
+
+    const response = await request(app)
+      .post('/user/products/ordering')
+      .send(orderData);
+
+    expect(response.status).toBe(500);
+    expect(response.body.message).toBe('Server Error');
   });
 });
-
-module.exports = app;

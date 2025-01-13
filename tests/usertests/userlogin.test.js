@@ -1,72 +1,93 @@
 const request = require('supertest');
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const app = require('../../server'); 
-jest.mock('../../config/db.conf');
-
-jest.mock('../../config/db.conf', () => ({
-    query: jest.fn()
-}));
-
 const db = require('../../config/db.conf');
+const jwt = require('jsonwebtoken');
 
-describe('POST /login', () => {
-    let server;
-    beforeAll(() => {
-        server = express();
-        server.use(express.json());
-        server.use('/', app);
+
+jest.mock('../../config/db.conf');
+jest.mock('jsonwebtoken');
+
+describe('POST /login/user', () => {
+
+  it('should return 404 if username or password is missing', async () => {
+    const response = await request(app)
+      .post('/login/user')
+      .send({
+        username: '', 
+        password: 'password123'
+      });
+    
+    expect(response.status).toBe(404);
+    expect(response.body.error).toBe('Authentication failed');
+  });
+
+  it('should return 404 if password is missing', async () => {
+    const response = await request(app)
+      .post('/login/user')
+      .send({
+        username: 'user1', 
+        password: ''
+      });
+
+    expect(response.status).toBe(404);
+    expect(response.body.error).toBe('Authentication failed');
+  });
+
+  it('should return 500 if user is not found in the database', async () => {
+    db.query.mockImplementation((query, values, callback) => {
+      callback(null, []);  
     });
 
-    afterAll((done) => {
-        done();
+    const response = await request(app)
+      .post('/login/user')
+      .send({
+        username: 'nonexistentuser',
+        password: 'wrongpassword'
+      });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe('user name and password are incorrect');
+  });
+
+  it('should return 500 if there is a database error', async () => {
+    db.query.mockImplementation((query, values, callback) => {
+      callback(new Error('Database error'), null); 
     });
 
-    it('should return 404 if username or password is missing', async () => {
-        const res = await request(server)
-            .post('/login/user')
-            .send({ username: '', password: '' });
-        
-        expect(res.status).toBe(404);
-        expect(res.body).toEqual({ error: 'Authentication failed' });
+    const response = await request(app)
+      .post('/login/user')
+      .send({
+        username: 'user1',
+        password: 'password123'
+      });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe('user name and password are incorrect');
+  });
+
+  it('should return 200 and a token if login is successful', async () => {
+    const mockUser = [{ id: 1, password: 'password123' }];
+    db.query.mockImplementation((query, values, callback) => {
+      callback(null, mockUser); 
     });
 
-    it('should return 500 if login failed', async () => {
-        db.query.mockImplementation((query, values, callback) => {
-            callback(null, []);
-        });
+    const fakeToken = 'fake-jwt-token';
+    jwt.sign.mockReturnValue(fakeToken);
 
-        const res = await request(server)
-            .post('/login/user')
-            .send({ username: 'user1', password: 'pass1' });
+    const response = await request(app)
+      .post('/login/user')
+      .send({
+        username: 'user1',
+        password: 'password123'
+      });
 
-        expect(res.status).toBe(500);
-        expect(res.body).toEqual({ error: 'user name and password are incorrect' });
-    });
-
-    it('should return 500 if username or password is incorrect', async () => {
-        db.query.mockImplementation((query, values, callback) => {
-            callback(null, []);
-        });
-
-        const res = await request(server)
-            .post('/login/user')
-            .send({ username: 'user2', password: 'wrongpassword' });
-
-        expect(res.status).toBe(500);
-        expect(res.body).toEqual({ error: 'user name and password are incorrect' });
-    });
-
-    it('should return a token if login is successful', async () => {
-        const userId = 1;
-        db.query.mockImplementation((query, values, callback) => {
-            callback(null, [{ id: userId, password: 'pass1' }]);
-        });
-
-        // const res = await request(server).post('/login/user').send({ username: 'user1', password: 'pass1' });
-        // expect(res.status).toBe(200);
-        // const token = res.body;
-        // const decoded = jwt.verify(token,process.env.JWT_SECRET_KEY);
-        // expect(decoded.ids).toBe(userId);
-    });
+    expect(response.status).toBe(200);
+    expect(response.text).toBe(fakeToken);  
+    expect(jwt.sign).toHaveBeenCalledWith(
+      { ids: mockUser[0].id },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: 300000 }
+    );
+  });
 });

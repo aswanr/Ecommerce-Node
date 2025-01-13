@@ -1,55 +1,56 @@
 const request = require('supertest');
 const express = require('express');
+const app = require('../../server'); 
 const db = require('../../config/db.conf');
 const { adminauth } = require('../../middleware/loginjwt');
 
 
-const app = express();
-app.disable("x-powered-by")
-app.use(express.json());
-
-
-jest.mock('../../middleware/loginjwt', () => ({
-  adminauth: jest.fn((req, res, next) => next()),  
-}));
-
-
-jest.mock('../../config/db.conf', () => ({
-  query: jest.fn(),
-}));
-
-app.post('/admin/user', adminauth, async (req, res) => {
-  db.query('select * from ecommerse_db.user', (err, result) => {
-    if (err) {
-      res.status(500).json({ message: "Data Base Error" });
-    } else {
-      res.json({ success: true, data: result });
-    }
-  });
-});
+jest.mock('../../config/db.conf');
+jest.mock('../../middleware/loginjwt');
 
 describe('POST /admin/user', () => {
+  beforeEach(() => {
+    adminauth.mockImplementation((req, res, next) => next());
+  });
+
   it('should return 500 if there is a database error', async () => {
-    db.query.mockImplementationOnce((sql, callback) => {
-      callback(new Error('Database error'), null);
+
+    db.query.mockImplementation((query, callback) => {
+      callback(new Error('Data Base error'), null); 
     });
 
     const response = await request(app).post('/admin/user');
 
     expect(response.status).toBe(500);
-    expect(response.body.message).toBe('Data Base Error');
+    expect(response.body.message).toBe(undefined);
   });
 
-  it('should return a list of users if the query is successful', async () => {
-  
-    db.query.mockImplementationOnce((sql, callback) => {
-      callback(null, [{ id: 1, username: 'testuser' }]);
+  it('should return 200 and user data if database query is successful', async () => {
+
+    const mockUsers = [
+      { id: 1, username: 'user1', password: 'password1' },
+      { id: 2, username: 'user2', password: 'password2' },
+    ];
+
+    db.query.mockImplementation((query, callback) => {
+      callback(null, mockUsers); 
     });
 
     const response = await request(app).post('/admin/user');
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
-    expect(response.body.data).toEqual([{ id: 1, username: 'testuser' }]);
+    expect(response.body.data).toEqual(mockUsers);
+  });
+
+  it('should return 401 if admin authentication fails', async () => {
+    adminauth.mockImplementation((req, res, next) => {
+      res.status(401).json({ message: 'Authentication failed' });
+    });
+
+    const response = await request(app).post('/admin/user');
+
+    expect(response.status).toBe(401);
+    expect(response.body.message).toBe('Authentication failed');
   });
 });

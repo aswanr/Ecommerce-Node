@@ -1,153 +1,126 @@
+const { userauth, adminauth } = require('../middleware/loginjwt'); 
 const jwt = require('jsonwebtoken');
-const { userauth, adminauth } = require('../../middleware/loginjwt');
 
-jest.mock('jsonwebtoken', () => ({
-  verify: jest.fn(),
-}));
+jest.mock('jsonwebtoken');  
 
-describe('Auth Middleware', () => {
+describe('Authentication Middleware', () => {
+
+  const mockRequest = (headers = {}) => ({
+    headers,
+  });
+
+  const mockResponse = () => {
+    const res = {};
+    res.status = jest.fn().mockReturnValue(res);
+    res.json = jest.fn().mockReturnValue(res);
+    return res;
+  };
+
+  const mockNext = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('userauth middleware', () => {
-    it('should return 401 if no authorization header is provided', async () => {
-      const req = {
-        headers: {},
-      };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-      const next = jest.fn();
-
-      await userauth(req, res, next);
-
-      expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ message: 'user not found' });
-    });
-
-    it('should return 401 if authorization header does not start with "Bearer "', async () => {
-      const req = {
-        headers: {
-          authorization: 'Basic token',
-        },
-      };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-      const next = jest.fn();
-
-      await userauth(req, res, next);
-
-      expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ message: 'user not found' });
-    });
-
     it('should call next if token is valid', async () => {
-      const req = {
-        headers: {
-          authorization: 'Bearer valid_token',
-        },
-      };
-      const res = {};
-      const next = jest.fn();
+      const token = 'valid-token';
+      const mockDecoded = { userId: 1 };
+      jwt.verify.mockResolvedValue(mockDecoded);  
 
-      jwt.verify.mockResolvedValue({ id: 1 });
+      const req = mockRequest({ authorization: `Bearer ${token}` });
+      const res = mockResponse();
 
-      await userauth(req, res, next);
+      await userauth(req, res, mockNext);
 
-      expect(next).toHaveBeenCalled();
+      expect(mockNext).toHaveBeenCalled();
     });
 
-    it('should return 404 if token is invalid', async () => {
-      const req = {
-        headers: {
-          authorization: 'Bearer invalid_token',
-        },
-      };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-      const next = jest.fn();
+    it('should return 401 if no authorization header is provided', async () => {
+      const req = mockRequest({});
+      const res = mockResponse();
 
-      jwt.verify.mockRejectedValue(new Error('invalid token'));
+      await userauth(req, res, mockNext);
 
-      await userauth(req, res, next);
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({ message: 'user not found' });
+      expect(mockNext).not.toHaveBeenCalled();
+    });
+
+    it('should return 401 if the authorization header does not start with "Bearer "', async () => {
+      const req = mockRequest({ authorization: 'InvalidToken' });
+      const res = mockResponse();
+
+      await userauth(req, res, mockNext);
+
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({ message: 'user not found' });
+      expect(mockNext).not.toHaveBeenCalled();
+    });
+
+    it('should return 404 if the token is invalid', async () => {
+      const token = 'invalid-token';
+      jwt.verify.mockRejectedValue(new Error('Invalid token')); 
+
+      const req = mockRequest({ authorization: `Bearer ${token}` });
+      const res = mockResponse();
+
+      await userauth(req, res, mockNext);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ message: 'unautherized token' });
+      expect(res.json).toHaveBeenCalledWith({ message: 'unauthorized token' });
+      expect(mockNext).not.toHaveBeenCalled();
     });
   });
 
-  // Test for adminauth middleware
   describe('adminauth middleware', () => {
-    it('should return 401 if no authorization header is provided', async () => {
-      const req = {
-        headers: {},
-      };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-      const next = jest.fn();
-
-      await adminauth(req, res, next);
-
-      expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ message: 'user not found' });
-    });
-
-    it('should return 401 if authorization header does not start with "Bearer "', async () => {
-      const req = {
-        headers: {
-          authorization: 'Basic token',
-        },
-      };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-      const next = jest.fn();
-
-      await adminauth(req, res, next);
-
-      expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ message: 'user not found' });
-    });
-
     it('should call next if token is valid', async () => {
-      const req = {
-        headers: {
-          authorization: 'Bearer valid_token',
-        },
-      };
-      const res = {};
-      const next = jest.fn();
+      const token = 'valid-token';
+      const mockDecoded = { adminId: 1 };
+      jwt.verify.mockResolvedValue(mockDecoded);  
 
-      jwt.verify.mockResolvedValue({ id: 1 });
+      const req = mockRequest({ authorization: `Bearer ${token}` });
+      const res = mockResponse();
 
-      await adminauth(req, res, next);
+      await adminauth(req, res, mockNext);
 
-      expect(next).toHaveBeenCalled();
+      expect(mockNext).toHaveBeenCalled();
     });
 
-    it('should return 404 if token is invalid', async () => {
-      const req = {
-        headers: {
-          authorization: 'Bearer invalid_token',
-        },
-      };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-      const next = jest.fn();
+    it('should return 401 if no authorization header is provided', async () => {
+      const req = mockRequest({});
+      const res = mockResponse();
 
-      jwt.verify.mockRejectedValue(new Error('invalid token'));
+      await adminauth(req, res, mockNext);
 
-      await adminauth(req, res, next);
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({ message: 'user not found' });
+      expect(mockNext).not.toHaveBeenCalled();
+    });
+
+    it('should return 401 if the authorization header does not start with "Bearer "', async () => {
+      const req = mockRequest({ authorization: 'InvalidToken' });
+      const res = mockResponse();
+
+      await adminauth(req, res, mockNext);
+
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({ message: 'user not found' });
+      expect(mockNext).not.toHaveBeenCalled();
+    });
+
+    it('should return 404 if the token is invalid', async () => {
+      const token = 'invalid-token';
+      jwt.verify.mockRejectedValue(new Error('Invalid token')); 
+
+      const req = mockRequest({ authorization: `Bearer ${token}` });
+      const res = mockResponse();
+
+      await adminauth(req, res, mockNext);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ message: 'unautherized token' });
+      expect(res.json).toHaveBeenCalledWith({ message: 'unauthorized token' });
+      expect(mockNext).not.toHaveBeenCalled();
     });
   });
 });
