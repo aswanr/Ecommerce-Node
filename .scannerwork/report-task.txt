@@ -1,6 +1,6 @@
-projectKey=Jwttoken
+projectKey=JWTauthentication
 serverUrl=http://localhost:9000
 serverVersion=10.7.0.96327
-dashboardUrl=http://localhost:9000/dashboard?id=Jwttoken
-ceTaskId=5da41d65-0006-4e60-ba34-3cc9f6b6f9a8
-ceTaskUrl=http://localhost:9000/api/ce/task?id=5da41d65-0006-4e60-ba34-3cc9f6b6f9a8
+dashboardUrl=http://localhost:9000/dashboard?id=JWTauthentication
+ceTaskId=abb209df-d38e-46b0-8f41-a15d0049226d
+ceTaskUrl=http://localhost:9000/api/ce/task?id=abb209df-d38e-46b0-8f41-a15d0049226d

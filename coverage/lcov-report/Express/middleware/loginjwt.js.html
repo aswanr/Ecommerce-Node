@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/20</span>
+                <span class='fraction'>20/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/8</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/20</span>
+                <span class='fraction'>20/20</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -96,69 +96,69 @@
 <a name='L31'></a><a href='#L31'>31</a>
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">9x</span>
+<a name='L34'></a><a href='#L34'>34</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span></td><td class="text"><pre class="prettyprint lang-js">const jwt=require('jsonwebtoken');
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span></td><td class="text"><pre class="prettyprint lang-js">const jwt=require('jsonwebtoken');
 &nbsp;
-const userauth=<span class="fstat-no" title="function not covered" >as</span>ync(request,response,next)=&gt;{
+const userauth=async(request,response,next)=&gt;{
     
-    const authheader=<span class="cstat-no" title="statement not covered" >await request.headers.authorization;</span>
-<span class="cstat-no" title="statement not covered" >    if(!authheader || !authheader.startsWith('Bearer ')){</span>
-<span class="cstat-no" title="statement not covered" >        return response.status(401).json({message:"user not found"})</span>
+    const authheader=await request.headers.authorization;
+    if(!authheader || !authheader.startsWith('Bearer ')){
+        return response.status(401).json({message:"user not found"})
     }
     else{
-        const token=<span class="cstat-no" title="statement not covered" >await authheader.split(' ')[1];</span>
-<span class="cstat-no" title="statement not covered" >        try{</span>
-            const decode=<span class="cstat-no" title="statement not covered" >await jwt.verify(token,process.env.JWT_SECRET_KEY);</span>
-<span class="cstat-no" title="statement not covered" >            return next();</span>
+        const token=await authheader.split(' ')[1];
+        try{
+            const decode=await jwt.verify(token,process.env.JWT_SECRET_KEY);
+            return next();
         }catch(err){
-<span class="cstat-no" title="statement not covered" >            response.status(404).json({message:"unautherized token"});</span>
+            response.status(404).json({message:"unautherized token"});
         }
     }
 }
 const adminauth=async(request,response,next)=&gt;{
     const authheader=await request.headers.authorization;
-    if(!authheader || <span class="branch-1 cbranch-no" title="branch not covered" >!authheader.startsWith('Bearer '))</span>{
+    if(!authheader || !authheader.startsWith('Bearer ')){
         return response.status(401).json({message:"user not found"})
     }
-    else<span class="missing-if-branch" title="else path not taken" >E</span>{
-        const token=<span class="cstat-no" title="statement not covered" >await authheader.split(' ')[1];</span>
-<span class="cstat-no" title="statement not covered" >        try{</span>
-            const decode=<span class="cstat-no" title="statement not covered" >await jwt.verify(token,process.env.JWT_SECRET_KEY);</span>
-<span class="cstat-no" title="statement not covered" >            return next();</span>
+    else{
+        const token=await authheader.split(' ')[1];
+        try{
+            const decode=await jwt.verify(token,process.env.JWT_SECRET_KEY);
+            return next();
         }catch(err){
-<span class="cstat-no" title="statement not covered" >            response.status(404).json({message:"unautherized token"});</span>
+            response.status(404).json({message:"unautherized token"});
         }
     }
 }
@@ -169,7 +169,7 @@ module.exports = {userauth , adminauth};</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-01-13T07:20:14.001Z
+                at 2025-01-14T04:14:52.661Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

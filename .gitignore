@@ -1,7 +1,11 @@
 #scannerwork
+*.scannerwork
 scannerwork/
 #covearge
-covearge/
+coverage/
 #nyc jest
-nyc/
-node_modules
+.nyc_output/
+*.sonar-project.properties
+*.yarn.lock
+sonar-project.properties/
+yarn.lock/
