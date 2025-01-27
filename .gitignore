@@ -1,0 +1,7 @@
+#scannerwork
+scannerwork/
+#covearge
+covearge/
+#nyc jest
+nyc/
+node_modules
