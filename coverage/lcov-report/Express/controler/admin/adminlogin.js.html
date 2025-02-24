@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.81% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/22</span>
+                <span class='fraction'>18/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">62.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>8/10</span>
+                <span class='fraction'>5/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.81% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/22</span>
+                <span class='fraction'>18/24</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -97,15 +97,20 @@
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -118,18 +123,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const express =require('express');
 const app=express();
@@ -139,7 +149,7 @@ app.disable("x-powered-by");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 &nbsp;
-app.post('/login/admin',async(req,res) =&gt; {
+app.post('/',async(req,res) =&gt; {
     let qr = "SELECT id,password FROM ecommerse_db.admin WHERE username = ? AND password = ?";
     const username1 = req.body.username;
     const password1 = req.body.password; 
@@ -150,16 +160,21 @@ app.post('/login/admin',async(req,res) =&gt; {
 <span class="cstat-no" title="statement not covered" >                return res.status(500).send({ error: "Login failed" });</span>
             } 
     else {
-            db.query(qr, [username1, password1], (err, result) =&gt; {
-            if (err || result.length == 0) {
-                return res.status(500).send({ error: "user name and password are incorrect" });
-            } 
-            else<span class="missing-if-branch" title="else path not taken" >E</span>{
-            const ids = <span class="cstat-no" title="statement not covered" >result[0].id;</span>
-            const token = <span class="cstat-no" title="statement not covered" >jwt.sign({ ids }, process.env.JWT_SECRET_KEY, { expiresIn: 300000 })</span>
-<span class="cstat-no" title="statement not covered" >            res.status(200).send(token);</span>
+        try{
+            const data= await db.query(qr,[username1, password1]);
+            const ids = <span class="cstat-no" title="statement not covered" >data[0].id;</span>
+<span class="cstat-no" title="statement not covered" >            if(data[0].length==0){</span>
+<span class="cstat-no" title="statement not covered" >                res.json({message:"Incorrect username or password"});</span>
+            }
+            else{
+                const jwttoken = <span class="cstat-no" title="statement not covered" >jwt.sign({ ids }, process.env.JWT_SECRET_KEY, { expiresIn: 300000 })</span>
+<span class="cstat-no" title="statement not covered" >                res.status(200).send(jwttoken);</span>
+            }
+            
         }
-        })
+        catch(error) {
+                return res.status(500).send({ error: "user name and password are incorrect" });
+        }
     }}); 
 &nbsp;
 &nbsp;
@@ -172,7 +187,7 @@ module.exports=app;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-01-14T04:14:52.661Z
+                at 2025-01-27T12:28:07.306Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

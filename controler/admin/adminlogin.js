@@ -1,34 +1,43 @@
-const express =require('express');
-const app=express();
+const express = require("express");
+const app = express();
 const db = require("../../config/db.conf");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt"); // Corrected spelling
 app.disable("x-powered-by");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.post('/login/admin',async(req,res) => {
-    let qr = "SELECT id,password FROM ecommerse_db.admin WHERE username = ? AND password = ?";
-    const username1 = req.body.username;
-    const password1 = req.body.password; 
-    if (!req.body.username || !req.body.password) {
-        return res.status(404).send({ error: "Authentication failed" });
-    }   
-    if(res.length === 0){
-                return res.status(500).send({ error: "Login failed" });
-            } 
-    else {
-            db.query(qr, [username1, password1], (err, result) => {
-            if (err || result.length == 0) {
-                return res.status(500).send({ error: "user name and password are incorrect" });
-            } 
-            else{
-            const ids = result[0].id;
-            const token = jwt.sign({ ids }, process.env.JWT_SECRET_KEY, { expiresIn: 300000 })
-            res.status(200).send(token);
-        }
-        })
-    }}); 
+app.post("/", async (req, res) => {
+  const qr = "SELECT id, password FROM ecommerse_db.admin WHERE username = ?";
+  const username = req.body.username;
+  const password = req.body.password;
 
+  if (!username || !password) {
+    return res.status(400).send({ error: "Username and password required" });
+  }
 
-module.exports=app;
+  try {
+    const [data] = await db.query(qr, [username]);
 
+    if (data.length === 0) {
+      return res.status(401).send({ error: "Login failed" });
+    }
+
+    const user = data[0];
+    const match = await bcrypt.compare(password, user.password);
+
+    if (match) {
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
+        expiresIn: "8h",
+      });
+      res.status(200).send({ token: token });
+    } else {
+      res.status(401).send({ error: "Username or password is incorrect" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Internal server error" });
+  }
+});
+
+module.exports = app;

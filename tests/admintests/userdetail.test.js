@@ -10,19 +10,16 @@ jest.mock('../../middleware/loginjwt');
 
 describe('POST /admin/user', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     adminauth.mockImplementation((req, res, next) => next());
   });
-
   it('should return 500 if there is a database error', async () => {
-
-    db.query.mockImplementation((query, callback) => {
-      callback(new Error('Data Base error'), null); 
+    db.query.mockImplementation((query,callback) => {
+      callback(new Error('DataBase error'), null); 
     });
-
     const response = await request(app).post('/admin/user');
-
     expect(response.status).toBe(500);
-    expect(response.body.message).toBe(undefined);
+    expect(response.text).toEqual("Internal Server Error");
   });
 
   it('should return 200 and user data if database query is successful', async () => {
@@ -54,3 +51,4 @@ describe('POST /admin/user', () => {
     expect(response.body.message).toBe('Authentication failed');
   });
 });
+

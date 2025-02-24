@@ -12,11 +12,12 @@ describe('POST /login/user', () => {
 
   it('should return 404 if username or password is missing', async () => {
     const response = await request(app)
-      .post('/login/user')
-      .send({
+      .post('/login/user').send(
+        {
         username: '', 
         password: 'password123'
-      });
+      }
+    );
     
     expect(response.status).toBe(404);
     expect(response.body.error).toBe('Authentication failed');
