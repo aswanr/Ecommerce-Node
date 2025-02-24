@@ -1,7 +1,33 @@
-#scannerwork
-scannerwork/
-#covearge
-covearge/
-#nyc jest
-nyc/
-node_modules
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment Variables
+.env
+
+# Build
+dist/
+build/
+
+# Coverage Directory used by tools like istanbul
+coverage/
+
+# nyc test coverage
+.nyc_output/
+
+# Sonar
+.scannerwork/
+*.scannerwork
+sonar-project.properties
+
+# Others
+.idea/
+.vscode/
+.DS_Store
+*.lock

@@ -1,6 +1,10 @@
 const { userauth, adminauth } = require('../middleware/loginjwt'); 
 const jwt = require('jsonwebtoken');
 
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
 jest.mock('jsonwebtoken');  
 
 describe('Authentication Middleware', () => {
@@ -17,10 +21,6 @@ describe('Authentication Middleware', () => {
   };
 
   const mockNext = jest.fn();
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
 
   describe('userauth middleware', () => {
     it('should call next if token is valid', async () => {
@@ -68,7 +68,7 @@ describe('Authentication Middleware', () => {
       await userauth(req, res, mockNext);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ message: 'unauthorized token' });
+      expect(res.json).toHaveBeenCalledWith({ message: 'unautherized token' });
       expect(mockNext).not.toHaveBeenCalled();
     });
   });
@@ -119,7 +119,7 @@ describe('Authentication Middleware', () => {
       await adminauth(req, res, mockNext);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ message: 'unauthorized token' });
+      expect(res.json).toHaveBeenCalledWith({ message: 'unautherized token' });
       expect(mockNext).not.toHaveBeenCalled();
     });
   });

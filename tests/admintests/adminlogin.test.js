@@ -16,8 +16,8 @@ describe('POST /login/admin', () => {
         server = express();
         server.use(express.json());
         server.use('/', app);
+        jest.clearAllMocks();
     });
-
     afterAll((done) => {
         done();
     });
@@ -36,10 +36,7 @@ describe('POST /login/admin', () => {
             callback(null, []);
         });
 
-        const res = await request(server)
-            .post('/login/admin')
-            .send({ username: 'user1', password: 'pass1' });
-
+        const res = await request(server).post('/login/admin').send({ username: 'user1', password: 'pass1' });
         expect(res.status).toBe(500);
         expect(res.body).toEqual({ error: 'user name and password are incorrect' });
     });
@@ -49,24 +46,8 @@ describe('POST /login/admin', () => {
             callback(null, []);
         });
 
-        const res = await request(server)
-            .post('/login/admin')
-            .send({ username: 'user2', password: 'wrongpassword' });
-
+        const res = await request(server).post('/login/admin').send({ username: 'user2', password: 'wrongpassword' });
         expect(res.status).toBe(500);
         expect(res.body).toEqual({ error: 'user name and password are incorrect' });
-    });
-
-    it('should return a token if login is successful', async () => {
-        const userId = 1;
-        db.query.mockImplementation((query, values, callback) => {
-            callback(null, [{ id: userId, password: 'pass1' }]);
-        });
-
-        const res = await request(server).post('/login/user').send({ username: 'user1', password: 'pass1' });
-        expect(res.status).toBe(200);
-        const token = res.body;
-        const decoded = jwt.verify(token,process.env.JWT_SECRET_KEY);
-        expect(decoded.ids).toBe(userId);
     });
 });

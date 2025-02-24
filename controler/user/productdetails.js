@@ -1,17 +1,22 @@
-const express =require('express');
-const app=express();
+const express = require("express");
+const app = express();
 const db = require("../../config/db.conf");
-const {userauth} = require('../../middleware/loginjwt');
+// const { userauth } = require('../../middleware/loginjwt');
+const cors = require("cors");
+app.use(cors());
 app.disable("x-powered-by");
-app.post('/user/products',userauth,async(req,res)=>{
-    db.query('select * from ecommerse_db.products',(err,result)=>{
-        if(err){
-            res.send(500).json({message:"Data Base Error"})
-        }
-        else{
-            res.json({ success: true, data: result });
-        }
-    })
+
+app.get("/", async (req, res) => {
+  try {
+    const dataResult = await db.query("SELECT * FROM ecommerse_db.products");
+    res.json({
+      success: true,
+      data: dataResult,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
-module.exports=app;
+module.exports = app;
